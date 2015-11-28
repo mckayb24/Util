@@ -11,20 +11,26 @@ func TestCreate(t *testing.T) {
 	}{
 		{
 			&struct {
-				String string `default:"string"`
-				Int    int    `default:"7"`
-				Int8   int8   `default:"8"`
+				Int   int   `default:"7"`
+				Int8  int8  `default:"8"`
+				Int16 int16 `default:"16"`
+				Int32 int32 `default:"32"`
+				Int64 int64 `default:"64"`
 			}{},
 			&struct {
-				String string `default:"string"`
-				Int    int    `default:"7"`
-				Int8   int8   `default:"8"`
+				Int   int   `default:"7"`
+				Int8  int8  `default:"8"`
+				Int16 int16 `default:"16"`
+				Int32 int32 `default:"32"`
+				Int64 int64 `default:"64"`
 			}{
-				"string",
 				7,
 				8,
+				16,
+				32,
+				64,
 			},
-			"struct with string, int, and int8",
+			"struct with int types",
 		},
 	}
 

@@ -60,7 +60,15 @@ func getDefaultValue(field reflect.StructField) (reflect.Value, error) {
 	d := field.Tag.Get("default")
 	v := reflect.New(field.Type).Elem()
 	switch field.Type.Kind() {
-	case reflect.Int, reflect.Int8:
+	case reflect.Int8:
+		fallthrough
+	case reflect.Int16:
+		fallthrough
+	case reflect.Int32:
+		fallthrough
+	case reflect.Int64:
+		fallthrough
+	case reflect.Int:
 		i, err := strconv.ParseInt(d, 0, 64)
 		if err != nil {
 			return v, defaultError{err}
