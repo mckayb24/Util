@@ -69,6 +69,17 @@ func TestCreate(t *testing.T) {
 			},
 			"struct with float types",
 		},
+		{
+			&struct {
+				String string `default:"string"`
+			}{},
+			&struct {
+				String string `default:"string"`
+			}{
+				"string",
+			},
+			"struct with string types",
+		},
 	}
 
 	for _, test := range tests {
