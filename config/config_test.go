@@ -53,7 +53,21 @@ func TestCreate(t *testing.T) {
 				32,
 				64,
 			},
-			"struct with int types",
+			"struct with uint types",
+		},
+		{
+			&struct {
+				Float32 float32 `default:"32.32"`
+				Float64 float64 `default:"64.64"`
+			}{},
+			&struct {
+				Float32 float32 `default:"32.32"`
+				Float64 float64 `default:"64.64"`
+			}{
+				32.32,
+				64.64,
+			},
+			"struct with float types",
 		},
 	}
 

@@ -88,7 +88,14 @@ func getDefaultValue(field reflect.StructField) (reflect.Value, error) {
 			return v, defaultError{err}
 		}
 		v.SetUint(i)
+	case reflect.Float32:
+		fallthrough
 	case reflect.Float64:
+		f, err := strconv.ParseFloat(d, 64)
+		if err != nil {
+			return v, defaultError{err}
+		}
+		v.SetFloat(f)
 	case reflect.String:
 		v.SetString(d)
 	}
