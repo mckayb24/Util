@@ -32,6 +32,29 @@ func TestCreate(t *testing.T) {
 			},
 			"struct with int types",
 		},
+		{
+			&struct {
+				Uint   uint   `default:"7"`
+				Uint8  uint8  `default:"8"`
+				Uint16 uint16 `default:"16"`
+				Uint32 uint32 `default:"32"`
+				Uint64 uint64 `default:"64"`
+			}{},
+			&struct {
+				Uint   uint   `default:"7"`
+				Uint8  uint8  `default:"8"`
+				Uint16 uint16 `default:"16"`
+				Uint32 uint32 `default:"32"`
+				Uint64 uint64 `default:"64"`
+			}{
+				7,
+				8,
+				16,
+				32,
+				64,
+			},
+			"struct with int types",
+		},
 	}
 
 	for _, test := range tests {
