@@ -11,7 +11,7 @@ type defaultError struct {
 	err error
 }
 
-type flags map[string]reflect.Value
+type flags map[string]interface{}
 
 func (de defaultError) Error() string {
 	return fmt.Sprintf("Load default error: %s", de.Error())
@@ -26,7 +26,7 @@ func Parse(c interface{}) error {
 	return fs.set(reflect.ValueOf(c))
 }
 
-func getFlags(t reflect.Type) (flags, error) {
+func getFlags(t reflect.Type, parents ...string) (flags, error) {
 	if t.Kind() == reflect.Ptr {
 		t = t.Elem()
 	}
@@ -53,17 +53,18 @@ func (fs flags) set(v reflect.Value) error {
 		return fmt.Errorf("Non struct value")
 	}
 	for key, fv := range fs {
+		val := reflect.ValueOf(fv)
 		f := v.FieldByName(key)
 		if f.Kind() == reflect.Ptr {
-			f.Set(fv)
+			f.Set(val)
 			continue
 		}
-		f.Set(fv.Elem())
+		f.Set(val.Elem())
 	}
 	return nil
 }
 
-func getFlagValue(field reflect.StructField) (reflect.Value, error) {
+func getFlagValue(field reflect.StructField) (interface{}, error) {
 	d := field.Tag.Get("default")
 	usage := field.Tag.Get("usage")
 	switch field.Type.Kind() {
@@ -72,39 +73,39 @@ func getFlagValue(field reflect.StructField) (reflect.Value, error) {
 		if err != nil {
 			return reflect.Value{}, defaultError{err}
 		}
-		return reflect.ValueOf(flag.Int64(field.Name, i, usage)), nil
+		return flag.Int64(field.Name, i, usage), nil
 	case reflect.Int:
 		i, err := strconv.Atoi(d)
 		if err != nil {
 			return reflect.Value{}, defaultError{err}
 		}
-		return reflect.ValueOf(flag.Int(field.Name, i, usage)), nil
+		return flag.Int(field.Name, i, usage), nil
 	case reflect.Uint64:
 		i, err := strconv.ParseUint(d, 0, 64)
 		if err != nil {
 			return reflect.Value{}, defaultError{err}
 		}
-		return reflect.ValueOf(flag.Uint64(field.Name, i, usage)), nil
+		return flag.Uint64(field.Name, i, usage), nil
 	case reflect.Uint:
 		i, err := strconv.ParseUint(d, 0, 64)
 		if err != nil {
 			return reflect.Value{}, defaultError{err}
 		}
-		return reflect.ValueOf(flag.Uint(field.Name, uint(i), usage)), nil
+		return flag.Uint(field.Name, uint(i), usage), nil
 	case reflect.Float64:
 		f, err := strconv.ParseFloat(d, 64)
 		if err != nil {
 			return reflect.Value{}, defaultError{err}
 		}
-		return reflect.ValueOf(flag.Float64(field.Name, f, usage)), nil
+		return flag.Float64(field.Name, f, usage), nil
 	case reflect.String:
-		return reflect.ValueOf(flag.String(field.Name, d, usage)), nil
+		return flag.String(field.Name, d, usage), nil
 	case reflect.Bool:
 		b, err := strconv.ParseBool(d)
 		if err != nil {
 			return reflect.Value{}, defaultError{err}
 		}
-		return reflect.ValueOf(flag.Bool(field.Name, b, usage)), nil
+		return flag.Bool(field.Name, b, usage), nil
 	}
 	return reflect.Value{}, fmt.Errorf("missing kind %s", field.Type.Kind())
 }
