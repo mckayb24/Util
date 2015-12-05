@@ -62,6 +62,29 @@ func TestParse(t *testing.T) {
 			},
 			"struct with string and bool types",
 		},
+		{
+			&struct {
+				Struct struct {
+					String string `default:"string"`
+					Bool   bool   `default:"true"`
+				}
+			}{},
+			&struct {
+				Struct struct {
+					String string `default:"string"`
+					Bool   bool   `default:"true"`
+				}
+			}{
+				Struct: struct {
+					String string `default:"string"`
+					Bool   bool   `default:"true"`
+				}{
+					"string",
+					true,
+				},
+			},
+			"struct with string and bool types",
+		},
 	}
 
 	for _, test := range tests {
