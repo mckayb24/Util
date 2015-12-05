@@ -71,10 +71,7 @@ func (fs flags) set(v reflect.Value) error {
 func getFlagValue(field reflect.StructField, parent string) (interface{}, error) {
 	d := field.Tag.Get("default")
 	usage := field.Tag.Get("usage")
-	name := field.Name
-	if parent != "" {
-		name = parent + "." + name
-	}
+	name := getName(field, parent)
 	switch field.Type.Kind() {
 	case reflect.Int64:
 		i, err := strconv.ParseInt(d, 0, 64)
@@ -118,4 +115,15 @@ func getFlagValue(field reflect.StructField, parent string) (interface{}, error)
 		return getFlags(field.Type, name)
 	}
 	return reflect.Value{}, fmt.Errorf("missing kind %s", field.Type.Kind())
+}
+
+func getName(field reflect.StructField, parent string) string {
+	name := field.Tag.Get("name")
+	if name == "" {
+		name = field.Name
+	}
+	if parent != "" {
+		name = parent + "." + name
+	}
+	return name
 }
